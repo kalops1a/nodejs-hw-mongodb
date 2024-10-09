@@ -1,6 +1,7 @@
 const fs = require('fs');
 const path = require('path');
 const Contact = require('../models/contactModel');
+const { v4: uuidv4 } = require('uuid'); 
 
 const getContacts = async (req, res) => {
   try {
@@ -28,7 +29,6 @@ const getContact = async (req, res) => {
   }
 };
 
-
 const importContacts = async () => {
   try {
     const filePath = path.join(__dirname, '../contacts.json'); 
@@ -36,12 +36,14 @@ const importContacts = async () => {
     const contacts = JSON.parse(data);
 
     
-    await Contact.insertMany(contacts.map(contact => ({
+    const contactsWithId = contacts.map(contact => ({
       ...contact,
+      id: uuidv4(), 
       createdAt: new Date(contact.createdAt), 
       updatedAt: new Date(contact.updatedAt)  
-    })));
+    }));
 
+    await Contact.insertMany(contactsWithId);
     console.log('Contacts imported successfully!');
   } catch (error) {
     console.error('Error importing contacts:', error.message);
