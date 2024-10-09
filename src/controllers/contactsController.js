@@ -1,3 +1,5 @@
+const fs = require('fs');
+const path = require('path');
 const Contact = require('../models/contactModel');
 
 const getContacts = async (req, res) => {
@@ -26,4 +28,24 @@ const getContact = async (req, res) => {
   }
 };
 
-module.exports = { getContacts, getContact };
+
+const importContacts = async () => {
+  try {
+    const filePath = path.join(__dirname, '../contacts.json'); 
+    const data = fs.readFileSync(filePath);
+    const contacts = JSON.parse(data);
+
+    
+    await Contact.insertMany(contacts.map(contact => ({
+      ...contact,
+      createdAt: new Date(contact.createdAt), 
+      updatedAt: new Date(contact.updatedAt)  
+    })));
+
+    console.log('Contacts imported successfully!');
+  } catch (error) {
+    console.error('Error importing contacts:', error.message);
+  }
+};
+
+module.exports = { getContacts, getContact, importContacts };
