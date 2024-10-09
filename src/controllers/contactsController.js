@@ -1,109 +1,29 @@
+const Contact = require('../models/contactModel');
 
-const contacts = [
-  {
-    name: "Yulia Shevchenko",
-    phoneNumber: "+380000000001",
-    email: "oleh1@example.com",
-    isFavourite: false,
-    contactType: "personal",
-    createdAt: "2024-05-08T16:12:14.954151",
-    updatedAt: "2024-05-08T16:12:14.954158",
-  },
-  {
-    name: "Dmytro Boyko",
-    phoneNumber: "+380000000002",
-    email: null,
-    isFavourite: false,
-    contactType: "personal",
-    createdAt: "2024-05-08T16:12:14.954163",
-    updatedAt: "2024-05-08T16:12:14.954164",
-  },
-  {
-    name: "Andriy Pavlenko",
-    phoneNumber: "+380000000003",
-    email: "dmytro3@example.com",
-    isFavourite: false,
-    contactType: "home",
-    createdAt: "2024-05-08T16:12:14.954168",
-    updatedAt: "2024-05-08T16:12:14.954170",
-  },
-  {
-    name: "Yulia Shevchenko",
-    phoneNumber: "+380000000004",
-    email: null,
-    isFavourite: false,
-    contactType: "personal",
-    createdAt: "2024-05-08T16:12:14.954173",
-    updatedAt: "2024-05-08T16:12:14.954174",
-  },
-  {
-    name: "Kateryna Povalenko",
-    phoneNumber: "+380000000005",
-    email: "ivan5@example.com",
-    isFavourite: false,
-    contactType: "personal",
-    createdAt: "2024-05-08T16:12:14.954178",
-    updatedAt: "2024-05-08T16:12:14.954179",
-  },
-  {
-    name: "Anna Kovalenko",
-    phoneNumber: "+380000000006",
-    email: null,
-    isFavourite: false,
-    contactType: "home",
-    createdAt: "2024-05-08T16:12:14.954182",
-    updatedAt: "2024-05-08T16:12:14.954184",
-  },
-  {
-    name: "Oleh Tkachuk",
-    phoneNumber: "+380000000007",
-    email: "andriy7@example.com",
-    isFavourite: false,
-    contactType: "personal",
-    createdAt: "2024-05-08T16:12:14.954187",
-    updatedAt: "2024-05-08T16:12:14.954189",
-  },
-  {
-    name: "Maria Petrenko",
-    phoneNumber: "+380000000008",
-    email: null,
-    isFavourite: false,
-    contactType: "personal",
-    createdAt: "2024-05-08T16:12:14.954196",
-    updatedAt: "2024-05-08T16:12:14.954198",
-  },
-  {
-    name: "Ivan Ivanenko",
-    phoneNumber: "+380000000009",
-    email: "vasyl9@example.com",
-    isFavourite: false,
-    contactType: "home",
-    createdAt: "2024-05-08T16:12:14.954203",
-    updatedAt: "2024-05-08T16:12:14.954205",
-  },
-  {
-    name: "Kateryna Kovalchuk",
-    phoneNumber: "+3800000000010",
-    email: null,
-    isFavourite: false,
-    contactType: "personal",
-    createdAt: "2024-05-08T16:12:14.954208",
-    updatedAt: "2024-05-08T16:12:14.954211",
-  },
-];
-
-const getContacts = (req, res) => {
-  res.status(200).json(contacts);
-};
-
-const getContactById = (req, res) => {
-  const contactId = parseInt(req.params.contactId);
-  const contact = contacts[contactId - 1]; 
-
-  if (!contact) {
-    return res.status(404).json({ message: 'Contact not found' });
+const getContacts = async (req, res) => {
+  try {
+    const contacts = await Contact.find();
+    res.status(200).json({ status: 200, message: 'Successfully found contacts!', data: contacts });
+  } catch (error) {
+    res.status(500).json({ message: 'Internal server error' });
   }
-  res.status(200).json(contact);
 };
 
-module.exports = { getContacts, getContactById };
+const getContact = async (req, res) => {
+  const { contactId } = req.params;
+  try {
+    const contact = await Contact.findById(contactId);
+    if (!contact) {
+      return res.status(404).json({ message: 'Contact not found' });
+    }
+    res.status(200).json({
+      status: 200,
+      message: `Successfully found contact with id ${contactId}!`,
+      data: contact,
+    });
+  } catch (error) {
+    res.status(500).json({ message: 'Internal server error' });
+  }
+};
+
+module.exports = { getContacts, getContact };
