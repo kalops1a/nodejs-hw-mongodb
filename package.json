@@ -16,7 +16,8 @@
     "dotenv": "^16.4.5",
     "express": "^4.21.1",
     "mongoose": "^8.7.0",
-    "pino-http": "^10.3.0"
+    "pino-http": "^10.3.0",
+    "uuid": "^10.0.0"
   },
   "devDependencies": {
     "eslint": "^9.12.0",
